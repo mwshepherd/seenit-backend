@@ -3,7 +3,10 @@ class CountriesController < ApplicationController
         @countries = Country.all
         if params[:type] == "json"
             data = @countries.map do |country|
-                [country.latitude, country.longitude]
+                {
+                    name: country.name,
+                    coords: [country.latitude, country.longitude]
+                }
             end 
             render json: {data: data}
         end
