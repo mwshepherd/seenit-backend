@@ -12,6 +12,15 @@ class CountriesController < ApplicationController
         end
     end
 
-    def show
+    def create
+        puts params[:country]
+        Country.create(country_params)
+        render json: "country bookmark", status: 200
+    end
+
+    private
+
+    def country_params
+        params.require(:country).permit(:name)
     end
 end
