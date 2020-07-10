@@ -1,8 +1,9 @@
 class CountriesController < ApplicationController
     before_action :set_country, only: [:destroy]
+    before_action :authenticate_user
 
     def index
-        @countries = Country.all
+        @countries = current_user.countries.all
         if params[:type] == "json"
             data = @countries.map do |country|
                 {
@@ -11,13 +12,18 @@ class CountriesController < ApplicationController
                     coords: [country.latitude, country.longitude]
                 }
             end 
-            render json: {data: data}
+            render json: {
+                user: {
+                    username: current_user.username,
+                    email: current_user.email
+                }, 
+                data: data
+            }
         end
     end
 
     def create
-        puts params[:country]
-        Country.create(country_params)
+        current_user.countries.create(country_params)
         render json: "country bookmark", status: 200
     end
 
